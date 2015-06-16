@@ -18,5 +18,11 @@ public interface ProductManager extends Serializable {
     public List<Pedido> darPedidos();
     
     public Categoria darCategoria(Long id);
+    
+    public void guardarCategoria(Categoria cat);
+    
+    public void borrarCategoria (long idCat);
+    
+    public Categoria borrarCategoria (Categoria cat);
 
 }

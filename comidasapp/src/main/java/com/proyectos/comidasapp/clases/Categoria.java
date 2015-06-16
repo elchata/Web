@@ -78,4 +78,8 @@ public class Categoria implements Serializable {
 	public void setHijos(List<Categoria> hijos) {
 		this.hijos = hijos;
 	} 
+	
+	public String toString() {
+        return nombre;
+    }
 }

@@ -3,22 +3,21 @@ package com.proyectos.comidasapp.web;
 import java.util.Date; 
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession; 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping; 
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.proyectos.comidasapp.clases.Categoria;
 import com.proyectos.comidasapp.clases.User;
 import com.proyectos.comidasapp.service.ProductManager;
 
 @Controller
 public class InventoryController {
-
-    protected final Log logger = LogFactory.getLog(getClass());
     
     @Autowired
     private ProductManager productManager;
@@ -30,7 +29,6 @@ public class InventoryController {
     @RequestMapping(value="/hello.htm")
     public String printHello(ModelMap model) {    	
     	String now = (new Date()).toString();
-        logger.info("Returning hello view");
         model.addAttribute("now", now); 
         return "hello";
     }
@@ -43,8 +41,7 @@ public class InventoryController {
     }
     
     @RequestMapping(value="/mostrarProducto.htm")
-    public String mostrarProd(HttpServletRequest req, ModelMap model) {  
-        logger.info("Returning hello view");
+    public String mostrarProd(HttpServletRequest req, ModelMap model) { 
         Long val = Long.parseLong(req.getParameter("idCat"));
         model.addAttribute("categoria", this.productManager.darCategoria(val)); 
         model.addAttribute("categorias",this.productManager.recuperarTodasCategorias());
@@ -57,11 +54,44 @@ public class InventoryController {
         return "ABMcategorias";
     }
     
+    @RequestMapping(value = "/nuevaCateg.htm", method = RequestMethod.GET)
+    public String nuevaCategorias(ModelMap model) { 
+    	model.addAttribute("command", new Categoria());
+        model.addAttribute("categorias",this.productManager.recuperarTodasCategorias());
+        return "editCategoria";
+    }
+    
+    @RequestMapping(value = "/nuevitaCat.htm", method = RequestMethod.POST)
+    public String creaCategoria(@ModelAttribute("command") Categoria cat, ModelMap model) { 
+    	if (cat.getIdCategoria() != 0) {
+    		Categoria papa = this.productManager.darCategoria(cat.getIdCategoria());
+    		cat.setPadre(papa);
+    	}
+    	cat.setIdCategoria(null);    	
+    	this.productManager.guardarCategoria(cat);
+        model.addAttribute("categorias",this.productManager.recuperarTodasCategorias());
+        return "ABMcategorias";
+    }
+    
     @RequestMapping(value="/editarCat.htm")
     public String verCategorias(HttpServletRequest req, ModelMap model) { 
     	Long val = Long.parseLong(req.getParameter("idCat"));
         model.addAttribute("categoria", this.productManager.darCategoria(val)); 
         return "verCategoria";
+    }
+    
+    @RequestMapping(value="/eliminarCat.htm")
+    public String eliminarCategoria(HttpServletRequest req, ModelMap model) { 
+    	Long val = Long.parseLong(req.getParameter("idCat"));
+    	/* borra directamente buscando la entidad involucrada
+        	Categoria aux = this.productManager.darCategoria(val);    	
+    		this.productManager.borrarCategoria(aux); */
+    	
+    	// borra por medio de id
+    	this.productManager.borrarCategoria(val);
+    	
+        model.addAttribute("categorias", this.productManager.recuperarTodasCategorias()); 
+        return "ABMcategorias";
     }
     
     @RequestMapping(value="/verProdCat.htm")

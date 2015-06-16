@@ -44,4 +44,20 @@ public class SimpleProductManager implements ProductManager {
 	public List<Pedido> darPedidos() {
 		return pedidoModel.recuperarTodos();
 	}
+
+	@Override
+	public void guardarCategoria(Categoria cat) {
+		categoriaModel.actualizar(cat);		
+	}
+
+	@Override
+	public void borrarCategoria(long idCat) {
+		categoriaModel.borrar(idCat);		
+	}
+
+	@Override
+	public Categoria borrarCategoria(Categoria cat) {
+		// TODO Auto-generated method stub
+		return categoriaModel.borrar(cat);
+	}
 }

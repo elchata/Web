@@ -42,7 +42,8 @@ public class GenericDAOHibernateJPA<T> implements BaseGenericDAOS<T> {
 	@Override
 	@Transactional
 	public void borrar(long id) {
-		this.getEntityManager().remove(id);	
+		T entity = this.getEntityManager().getReference(getPersistentClass(), id);
+		this.borrar(entity);	
 	}
 	
 	@Override

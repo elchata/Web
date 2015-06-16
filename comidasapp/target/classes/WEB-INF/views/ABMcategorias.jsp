@@ -35,5 +35,6 @@
 	  </tr>
   </c:forEach>
 </table>
+<a href="nuevaCateg.htm" >Nueva Categoria </a>  
 </body>
 </html>
